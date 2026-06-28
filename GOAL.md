@@ -1,4 +1,4 @@
-# 🚀 AutoGTM: Autonomous Multi-Agent Growth Pod
+# 🚀 Forge: Autonomous Multi-Agent Growth Pod
 **Team Master Document: YC AI Growth Hackathon**
 
 *This document serves as our source of truth for the hackathon. It outlines the problem, the business value, our technical approach, the demo flow, and the breakdown of team tasks.*

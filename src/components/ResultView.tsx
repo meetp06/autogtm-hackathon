@@ -98,7 +98,7 @@ export function ResultView({ campaignId, onReset }: Props) {
     <div className="space-y-8">
       <header className="flex items-start justify-between gap-4">
         <div>
-          <p className="mono text-xs text-[var(--accent-text)]">RESULT {isB2B ? "· B2B" : "· B2C"}</p>
+          <p className="mono text-xs text-[var(--accent-text)]">CAMPAIGN READY</p>
           <h2 className="text-2xl font-semibold">{demand?.angleHeadline ?? "Your campaign"}</h2>
           <p className="text-sm text-[var(--muted)] mt-1">{demand?.reason}</p>
         </div>
@@ -114,6 +114,15 @@ export function ResultView({ campaignId, onReset }: Props) {
         output={isB2B ? "LinkedIn broadcast + outreach drafts" : `${platform} post ready for approval`}
       />
 
+      <CampaignBrief
+        product={campaign?.product ?? ""}
+        angle={demand?.angleHeadline}
+        reason={demand?.reason}
+        signalCount={signals?.length ?? 0}
+        audienceLabel={campaign?.audience ?? ""}
+        assetType={isB2B ? "LinkedIn post + outreach" : `${platform} post`}
+      />
+
       <div className="grid gap-6 lg:grid-cols-2">
         <PostPreview
           platform={platform}
@@ -126,7 +135,10 @@ export function ResultView({ campaignId, onReset }: Props) {
 
         <div className="space-y-4">
           <section className="rounded-xl border border-[var(--border)] bg-[var(--panel)] shadow-[var(--shadow-sm)] p-4">
-            <p className="mono text-xs text-[var(--faint)] mb-3">market insights (sourced)</p>
+            <div className="flex items-center justify-between mb-3">
+              <p className="mono text-xs text-[var(--faint)]">market insights (sourced)</p>
+              <span className="text-xs text-[var(--accent-text)]">{signals?.length ?? 0} sources</span>
+            </div>
             <div className="space-y-3 max-h-48 overflow-y-auto text-sm">
               {(signals ?? []).map((s, i) => (
                 <div
@@ -190,17 +202,27 @@ export function ResultView({ campaignId, onReset }: Props) {
           <section className="rounded-xl border border-[var(--border)] bg-[var(--panel)] shadow-[var(--shadow-sm)] p-4 text-sm space-y-2">
             <div className="flex items-center justify-between">
               <p className="mono text-xs text-[var(--faint)]">broadcast caption</p>
-              {creative && (
-                <span
-                  className={`mono text-[10px] px-2 py-0.5 rounded ${
-                    qcStatus === "pass"
-                      ? "bg-[var(--green)]/10 text-[var(--green)]"
-                      : "bg-[var(--amber)]/10 text-[var(--amber)]"
-                  }`}
-                >
-                  QC: {qcStatus} · {creativeSource}
-                </span>
-              )}
+              <div className="flex items-center gap-2">
+                {creative?.caption && (
+                  <button
+                    onClick={() => navigator.clipboard.writeText(creative.caption ?? "")}
+                    className="mono text-[10px] text-[var(--accent-text)] hover:underline"
+                  >
+                    Copy
+                  </button>
+                )}
+                {creative && (
+                  <span
+                    className={`mono text-[10px] px-2 py-0.5 rounded ${
+                      qcStatus === "pass"
+                        ? "bg-[var(--green)]/10 text-[var(--green)]"
+                        : "bg-[var(--amber)]/10 text-[var(--amber)]"
+                    }`}
+                  >
+                    QC: {qcStatus} · {creativeSource}
+                  </span>
+                )}
+              </div>
             </div>
             <p className="whitespace-pre-wrap">{creative?.caption}</p>
             {!isB2B && <p className="text-[var(--violet)]">{creative?.hashtags?.join(" ")}</p>}
@@ -231,8 +253,8 @@ export function ResultView({ campaignId, onReset }: Props) {
 
           <div className="rounded-xl border border-[var(--amber)]/35 bg-[var(--amber)]/10 p-4 text-xs text-[var(--ink)]">
             {isB2B
-              ? "Human-in-the-loop: outreach drafts are for YOU to copy & send from your own LinkedIn. Never auto-DM strangers."
-              : "Human-in-the-loop: nothing publishes automatically. Approving stages the post for you to review and publish from your own account."}
+              ? "Approval required: Forge stages outreach drafts for you to copy & send from your own LinkedIn. Never auto-DM strangers."
+              : "Approval required: Forge stages the post for you to review and publish from your own account. Nothing publishes automatically."}
           </div>
 
           <div className="space-y-2">
@@ -292,13 +314,22 @@ export function ResultView({ campaignId, onReset }: Props) {
                   </a>
                 </div>
                 <p className="text-sm whitespace-pre-wrap text-[var(--ink)]">{row.draftMessage}</p>
-                <button
-                  onClick={() => handleApproveOutreach(row._id)}
-                  disabled={row.state !== "draft"}
-                  className="w-full rounded-lg border border-[var(--green)] text-[var(--green)] py-2 text-xs disabled:opacity-40"
-                >
-                  {row.state === "draft" ? "Approve draft (copy & send yourself)" : `${row.state} ✓`}
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => navigator.clipboard.writeText(row.draftMessage ?? "")}
+                    disabled={row.state !== "draft"}
+                    className="flex-1 rounded-lg border border-[var(--border)] text-[var(--muted)] py-2 text-xs hover:text-[var(--ink)] disabled:opacity-40"
+                  >
+                    Copy draft
+                  </button>
+                  <button
+                    onClick={() => handleApproveOutreach(row._id)}
+                    disabled={row.state !== "draft"}
+                    className="flex-1 rounded-lg border border-[var(--green)] text-[var(--green)] py-2 text-xs disabled:opacity-40"
+                  >
+                    {row.state === "draft" ? "Approve" : `${row.state} ✓`}
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -340,6 +371,44 @@ function CampaignTransformation({
           <p className="mt-2 line-clamp-3 text-sm font-semibold text-[var(--ink)]">{step.value}</p>
         </div>
       ))}
+    </section>
+  );
+}
+
+function CampaignBrief({
+  product,
+  angle,
+  reason,
+  signalCount,
+  audienceLabel,
+  assetType,
+}: {
+  product: string;
+  angle?: string;
+  reason?: string;
+  signalCount: number;
+  audienceLabel: string;
+  assetType: string;
+}) {
+  const items = [
+    { label: "Product", value: product },
+    { label: "Angle", value: angle ?? "Locked by Demand Angle" },
+    { label: "Buyer pain", value: reason ?? "Sourced from live markets" },
+    { label: "Audience", value: audienceLabel || (signalCount > 0 ? `${signalCount} signal sources` : "Estimated by Audience Finder") },
+    { label: "Asset", value: assetType },
+  ];
+
+  return (
+    <section className="rounded-2xl border border-[var(--border)] bg-[var(--field)] p-4">
+      <p className="mono text-xs text-[var(--accent-text)] mb-3">Campaign brief</p>
+      <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        {items.map((item) => (
+          <div key={item.label} className="rounded-xl border border-[var(--border)] bg-[var(--panel)] p-3">
+            <p className="mono text-[10px] text-[var(--faint)]">{item.label}</p>
+            <p className="mt-1 text-sm font-semibold text-[var(--ink)] line-clamp-2">{item.value}</p>
+          </div>
+        ))}
+      </div>
     </section>
   );
 }

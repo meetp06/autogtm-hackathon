@@ -2,7 +2,7 @@
 
 ## Summary
 
-AutoGTM has a strong core workflow: input a product, find market signals, generate a GTM angle, create campaign assets, and require human approval. The current UX underplays that value. It feels more like a technical demo form than a premium, credible SaaS product.
+Forge has a strong core workflow: input a product, find market signals, generate a GTM angle, create campaign assets, and require human approval. The current UX underplays that value. It feels more like a technical demo form than a premium, credible SaaS product.
 
 The priority is to make the transformation obvious within seconds:
 
@@ -17,8 +17,8 @@ For the YC demo, the UI should optimize for judge comprehension and trust in a 3
 
    **Action:** Replace the first screen with a split composition: input on the left, live pipeline preview on the right. Show the promise before the user clicks.
 
-2. **Prefilled AutoGTM data makes the experience feel staged**
-   Loading with `AutoGTM` already filled helps demos, but it reduces trust. Users may assume the output is hardcoded.
+2. **Prefilled Forge data makes the experience feel staged**
+   Loading with `Forge` already filled helps demos, but it reduces trust. Users may assume the output is hardcoded.
 
    **Action:** Keep normal fields empty by default. Add an explicit `Use Cruitical demo` preset button for the hackathon flow.
 

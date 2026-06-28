@@ -1,6 +1,6 @@
-# AutoGTM
+# Forge
 
-AutoGTM is a Next.js + Convex application that turns a product description into a sourced GTM campaign. It runs a small agent pipeline over live market signals, locks one demand angle, generates a branded social creative, and stages the resulting post for human approval. In B2B mode it also builds a prospect audience and drafts personalized LinkedIn outreach.
+Forge turns a product description into a sourced GTM campaign. It runs a small agent pipeline over live market signals, locks one demand angle, generates a branded social creative, and stages the resulting post for human approval. In B2B mode it also builds a prospect audience and drafts personalized LinkedIn outreach.
 
 The system is intentionally human-in-the-loop: it never auto-publishes posts and never auto-sends cold outreach.
 

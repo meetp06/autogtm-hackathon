@@ -76,8 +76,8 @@ export async function runPipeline(campaignId: Id<"campaigns">) {
       campaignId,
       agent: "market",
       message: isB2B
-        ? "Market Pulse — Orange Slice webSearch across Reddit + X + LinkedIn (buyer voice + buying intent)..."
-        : "Market Pulse — Orange Slice webSearch across Reddit + X + LinkedIn buyer voice...",
+        ? "Signal Scan — Orange Slice webSearch across Reddit + X + LinkedIn (buyer voice + buying intent)..."
+        : "Signal Scan — Orange Slice webSearch across Reddit + X + LinkedIn buyer voice...",
       level: "info",
     });
 
@@ -99,7 +99,7 @@ export async function runPipeline(campaignId: Id<"campaigns">) {
     await convex.mutation(api.campaigns.appendLog, {
       campaignId,
       agent: "demand",
-      message: "Demand Gap agent analyzing verified signals...",
+      message: "Demand Angle — analyzing verified signals for the sharpest narrative wedge...",
       level: "info",
     });
 
@@ -210,7 +210,7 @@ async function prepareB2BAudience(
   await convex.mutation(api.campaigns.appendLog, {
     campaignId,
     agent: "audience",
-    message: "Audience Finder — querying Orange Slice (1.15B-profile DB) and estimating enrichment cost...",
+    message: "Audience Finder — scanning Orange Slice (1.15B-profile DB) and estimating enrichment cost...",
     level: "info",
   });
 
@@ -287,7 +287,7 @@ async function runCreativeAndDistribution(
   await convex.mutation(api.campaigns.appendLog, {
     campaignId,
     agent: "creative",
-    message: "Creative Studio — brand kit + Orange Slice copy + gpt-image-1 ad + QC gate...",
+    message: "Campaign Forge — brand kit + Orange Slice copy + gpt-image-1 ad + QC gate...",
     level: "info",
   });
 

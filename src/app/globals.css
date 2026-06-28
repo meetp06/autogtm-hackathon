@@ -2,7 +2,7 @@
 @import "tailwindcss";
 
 /*
- * LexAI — dynamic glassmorphism theme.
+ * Forge — dynamic glassmorphism theme.
  * A frosted-glass UI floating over a light studio gradient + chrome ribbons.
  * Lime/chartreuse accent for primary actions. App flow unchanged; visuals only.
  */
@@ -225,10 +225,10 @@ textarea:focus-visible {
 
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 0 1px rgba(140, 180, 60, 0.18), 0 0 22px rgba(140, 180, 60, 0.12);
+    box-shadow: 0 0 0 1px rgba(140, 180, 60, 0.12);
   }
   50% {
-    box-shadow: 0 0 0 1px rgba(140, 180, 60, 0.34), 0 0 44px rgba(140, 180, 60, 0.22);
+    box-shadow: 0 0 0 1px rgba(140, 180, 60, 0.28), 0 0 20px rgba(140, 180, 60, 0.10);
   }
 }
 

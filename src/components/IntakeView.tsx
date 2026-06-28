@@ -24,14 +24,13 @@ export function IntakeView({ data, onChange, onNext }: Props) {
       <section className="space-y-7">
         <header className="space-y-4">
           <div className="h-20 w-20 rounded-full dot-sun agent-pulse" />
-          <p className="mono text-xs uppercase tracking-[0.3em] text-[var(--accent-text)]">LexAI</p>
+          <p className="mono text-xs uppercase tracking-[0.3em] text-[var(--accent-text)]">Forge</p>
           <div className="space-y-3">
             <h1 className="max-w-xl text-4xl font-semibold tracking-tight sm:text-5xl">
-              Launch a sourced GTM campaign while the trend is still alive.
+              Launch while the market is still talking.
             </h1>
             <p className="max-w-lg text-base text-[var(--muted)]">
-              Agents turn live market signals into a buyer angle, campaign creative, and human-approved
-              outreach in one guided run.
+              Forge finds live buyer pain, locks the angle, and stages campaign assets for your approval.
             </p>
           </div>
         </header>
@@ -95,7 +94,7 @@ export function IntakeView({ data, onChange, onNext }: Props) {
             onClick={onNext}
             className="w-full lex-pill px-4 py-3 text-sm font-semibold text-[var(--accent-ink)] disabled:opacity-40 hover:brightness-110 transition"
           >
-            {data.mode === "b2b" ? "Build buyer campaign" : "Create social campaign"} →
+            Forge campaign →
           </button>
         </div>
       </section>
@@ -285,7 +284,7 @@ export function FollowUpView({ data, onChange, onLaunch, loading }: FollowUpProp
         onClick={onLaunch}
         className="w-full lex-pill px-4 py-3 text-sm font-semibold text-[var(--accent-ink)] disabled:opacity-40 hover:brightness-110 transition"
       >
-        {loading ? "Launching…" : data.mode === "b2b" ? "Launch buyer campaign →" : "Launch social campaign →"}
+        {loading ? "Forging…" : "Forge campaign →"}
       </button>
     </div>
   );

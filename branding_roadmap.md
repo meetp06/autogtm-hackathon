@@ -4,9 +4,9 @@ Perspective: experienced product marketing and product leadership lens, optimize
 
 ## Executive Recommendation
 
-Rename **AutoGTM**.
+Rename **Forge** (was AutoGTM).
 
-AutoGTM is clear to builders, but it sounds generic, internal, and commodity. It tells judges "this automates go-to-market," but it does not create a memorable category, emotional hook, or investor-grade point of view. The current product is stronger than the name: it is not just automating GTM tasks; it is collapsing the delay between live buyer pain and distribution.
+The old name (AutoGTM) was clear to builders, but it sounded generic, internal, and commodity. It told judges "this automates go-to-market," but it did not create a memorable category, emotional hook, or investor-grade point of view. The current product is stronger than the name: it is not just automating GTM tasks; it is collapsing the delay between live buyer pain and distribution.
 
 Recommended brand:
 
@@ -32,7 +32,7 @@ Why this is stronger:
 
 ### Replace
 
-- Product name: `AutoGTM`
+- Product name: `Forge`
 - UI headline: `Signal to post in under two minutes`
 - Button: `Launch agent pod`
 - Concept: `Autonomous Multi-Agent Growth Pod`
@@ -58,7 +58,7 @@ If the team dislikes SignalForge, use one of these:
 
 Avoid:
 
-- AutoGTM
+- Forge (was AutoGTM)
 - GrowthPod
 - AgentGTM
 - GTM AI
@@ -187,7 +187,7 @@ Do not spend hackathon time over-designing the logo. A clean wordmark plus consi
 
 | Current | Recommended |
 | --- | --- |
-| AutoGTM | SignalForge |
+| AutoGTM (old) | Forge (final) |
 | Signal to post in under two minutes | Launch while the market is still talking |
 | Launch agent pod | Forge campaign |
 | Agent pod executing | Campaign forge running |
@@ -322,7 +322,7 @@ The wedge is:
 
 High-impact changes before demo:
 
-- Rename visible product text from AutoGTM to SignalForge.
+- Rename visible product text to Forge.
 - Change primary CTA to `Forge campaign`.
 - Replace "agent pod" language with "campaign forge" or "growth desk".
 - Rename Market Pulse to Signal Scan in the UI.
@@ -389,4 +389,4 @@ Keep the technical architecture. The product is already more interesting than th
 2. It turns those signals into a campaign system, not just copy.
 3. It keeps humans in control of publishing.
 
-That is a stronger company story than AutoGTM.
+That is a stronger company story than the old AutoGTM name.

@@ -4,8 +4,8 @@ import { ChromeBackground } from "@/components/ChromeBackground";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "LexAI — Signal to post in 2 minutes",
-  description: "Autonomous multi-agent growth pod: market research → angle → creative → staged post",
+  title: "Forge — Launch while the market is still talking",
+  description: "Forge finds live buyer pain, locks the angle, and stages campaign assets for your approval.",
 };
 
 export default function RootLayout({

@@ -26,7 +26,7 @@ export default function Home() {
     return view;
   }, [campaign, view]);
 
-  async function launchPipeline(id: Id<"campaigns">, action?: "confirm_fiber_enrichment") {
+  async function launchPipeline(id: Id<"campaigns">, action?: "confirm_audience_enrichment") {
     const response = await fetch("/api/pipeline", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -61,9 +61,9 @@ export default function Home() {
     setConfirmingAudience(true);
     setError(null);
     try {
-      await launchPipeline(campaignId, "confirm_fiber_enrichment");
+      await launchPipeline(campaignId, "confirm_audience_enrichment");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Fiber enrichment failed");
+      setError(err instanceof Error ? err.message : "Audience enrichment failed");
     } finally {
       setConfirmingAudience(false);
     }

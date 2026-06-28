@@ -5,16 +5,16 @@ import { useQuery } from "convex/react";
 import { api } from "convex/_generated/api";
 
 const B2C_AGENTS = [
-  { id: "market", label: "Market Pulse", color: "var(--amber)", desc: "Reddit + X + LinkedIn scrape" },
-  { id: "demand", label: "Demand Gap", color: "var(--green)", desc: "Locks the angle" },
-  { id: "creative", label: "Creative Studio", color: "var(--violet)", desc: "Image + caption" },
+  { id: "market", label: "Signal Scan", color: "var(--amber)", desc: "Reddit + X + LinkedIn scrape" },
+  { id: "demand", label: "Demand Angle", color: "var(--green)", desc: "Locks the angle" },
+  { id: "creative", label: "Campaign Forge", color: "var(--violet)", desc: "Image + caption" },
 ] as const;
 
 const B2B_AGENTS = [
-  { id: "market", label: "Market Pulse", color: "var(--amber)", desc: "Scrape + intent signals" },
-  { id: "demand", label: "Demand Gap", color: "var(--green)", desc: "Locks the angle" },
+  { id: "market", label: "Signal Scan", color: "var(--amber)", desc: "Scrape + intent signals" },
+  { id: "demand", label: "Demand Angle", color: "var(--green)", desc: "Locks the angle" },
   { id: "audience", label: "Audience Finder", color: "var(--orange)", desc: "Audience + enrichment" },
-  { id: "creative", label: "Creative Studio", color: "var(--violet)", desc: "Post + outreach drafts" },
+  { id: "creative", label: "Campaign Forge", color: "var(--violet)", desc: "Post + outreach drafts" },
 ] as const;
 
 // Agent ids that map to a card in the live pod (excludes the "system" channel).
@@ -62,7 +62,7 @@ export function LiveRunView({ campaignId, product, onConfirmAudience, confirming
     <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
       <div className="space-y-6">
         <div>
-          <p className="mono text-xs text-[var(--accent-text)]">LIVE RUN — {product}</p>
+          <p className="mono text-xs text-[var(--accent-text)]">FORGING — {product}</p>
           <h2 className="text-2xl font-semibold mt-1">
             {currentStep.title}
           </h2>
@@ -149,7 +149,7 @@ function getCurrentStep(status: string, isB2B: boolean) {
     return {
       title: "Reading live market signals",
       focus: "Finding buyer pain",
-      detail: "Market Pulse is looking for complaints, buying intent, and creative gaps that can justify the campaign.",
+      detail: "Signal Scan is looking for complaints, buying intent, and creative gaps that can justify the campaign.",
       outcome: "The next screen will show sourced claims, not generic copy.",
       progress: "1 / 4",
     };
@@ -158,7 +158,7 @@ function getCurrentStep(status: string, isB2B: boolean) {
     return {
       title: isB2B ? "Buyer angle locked" : "Campaign angle locked",
       focus: isB2B ? "Turning the angle into an ICP" : "Turning the angle into creative",
-      detail: "Demand Gap has selected the narrative with the clearest reason to act now.",
+      detail: "Demand Angle has selected the narrative with the clearest reason to act now.",
       outcome: isB2B ? "Next: estimate and enrich the buyer list." : "Next: generate the staged post.",
       progress: "2 / 4",
     };
@@ -176,8 +176,8 @@ function getCurrentStep(status: string, isB2B: boolean) {
     return {
       title: "Building the campaign asset",
       focus: isB2B ? "Drafting post and outreach" : "Generating caption and visual",
-      detail: "Creative Studio is packaging the signal and angle into something ready for review.",
-      outcome: "Nothing publishes automatically. The final step is human approval.",
+      detail: "Campaign Forge is packaging the signal and angle into something ready for review.",
+      outcome: "Approval required: Forge stages assets; you choose what ships.",
       progress: "4 / 4",
     };
   }
@@ -191,7 +191,7 @@ function getCurrentStep(status: string, isB2B: boolean) {
     };
   }
   return {
-    title: "Agent pod executing",
+    title: "Forging campaign from live signals",
     focus: "Coordinating the workflow",
     detail: "The state machine is handing work between agents.",
     outcome: "Live updates will appear as each agent writes to Convex.",
@@ -332,9 +332,9 @@ function BackendProofPanel({
   return (
     <div className="rounded-2xl border border-[var(--border)] bg-[var(--panel)] shadow-[var(--shadow-sm)] p-4 h-fit">
       <p className="mono text-xs text-[var(--accent-text)]">Backend proof</p>
-      <h3 className="mt-2 text-xl font-semibold">Convex orchestration is live</h3>
+      <h3 className="mt-2 text-xl font-semibold">Agent state machine is live</h3>
       <p className="mt-1 text-sm text-[var(--muted)]">
-        Every agent writes to shared state, so the demo can prove real handoffs instead of a scripted spinner.
+        Every agent writes to shared Convex state — real handoffs, not a scripted spinner.
       </p>
       <div className="mt-4 space-y-2">
         {rows.map((row, i) => (
