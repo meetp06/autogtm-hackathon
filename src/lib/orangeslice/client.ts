@@ -15,8 +15,19 @@
  * countries} and companiesFilters.{industries,companySizes,countries}. The email/phone
  * search flags in the d.ts are rejected by the server, so contacts come from personContactGet.
  */
-import { configure, generateObject, oceanSearchPeople, personContactGet, webSearch } from "orangeslice";
+import {
+  configure,
+  generateObject,
+  integrations,
+  oceanSearchPeople,
+  personContactGet,
+  webSearch,
+} from "orangeslice";
 import type { FiberProspect } from "@/lib/fiber/types";
+import { withCache, cacheKey } from "@/lib/cache";
+
+const SIX_HOURS = 6 * 60 * 60 * 1000;
+const ONE_DAY = 24 * 60 * 60 * 1000;
 
 export type MarketScrapeChunk = {
   channel: "reddit" | "twitter" | "linkedin";
@@ -143,6 +154,30 @@ function ensureConfigured() {
   configured = true;
 }
 
+/**
+ * Send an email via the Orange Slice Gmail integration (Composio-backed).
+ * Method + payload field names are env-tunable since the Composio action schema
+ * may differ per account. Returns {ok,error} — never throws — so the caller can
+ * surface the real reason (e.g. Gmail OAuth not completed) to the user.
+ */
+export async function sendGmail(input: {
+  to: string;
+  subject: string;
+  body: string;
+}): Promise<{ ok: boolean; error?: string }> {
+  if (!hasOrangeSliceKey()) return { ok: false, error: "ORANGESLICE_API_KEY not set" };
+  ensureConfigured();
+  const method = process.env.OS_GMAIL_METHOD ?? "sendEmail";
+  const toField = process.env.OS_GMAIL_TO_FIELD ?? "recipient_email";
+  try {
+    const gmail = integrations.gmail as Record<string, (a: unknown) => Promise<unknown>>;
+    await gmail[method]({ [toField]: input.to, subject: input.subject, body: input.body });
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Gmail send failed" };
+  }
+}
+
 /** Structured AI output via Orange Slice. Throws if the key is missing — callers gate on hasOrangeSliceKey(). */
 export async function generateStructured<T>(input: {
   prompt: string;
@@ -243,6 +278,22 @@ export class OrangeSliceClient {
     if (!hasOrangeSliceKey()) {
       return { chunks: [], text: "", sourceCount: 0, channels: [], isSample: true };
     }
+    return withCache(
+      cacheKey("os-market", {
+        product: input.product,
+        description: input.description,
+        differentiator: input.differentiator,
+      }),
+      SIX_HOURS,
+      () => this.scrapeMarketSignalsUncached(input)
+    );
+  }
+
+  private async scrapeMarketSignalsUncached(input: {
+    product: string;
+    description: string;
+    differentiator: string;
+  }): Promise<MarketScrapeResult> {
     ensureConfigured();
 
     const product = input.product.trim();
@@ -321,19 +372,31 @@ export class OrangeSliceClient {
     listSize: number;
     total: number;
   }> {
-    const filters = await this.parseIcpToFilters(input);
-    const pruned = pruneFilters(filters);
-    ensureConfigured();
-    const { params, total } = await findWorkingFilters(pruned);
-    return {
-      audienceRef: `os:${Buffer.from(JSON.stringify(params)).toString("base64")}`,
-      listSize: Math.min(total, MAX_PROSPECTS),
-      total,
-    };
+    return withCache(
+      cacheKey("os-audience", { icp: input.icp, angle: input.angleHeadline, max: MAX_PROSPECTS }),
+      SIX_HOURS,
+      async () => {
+        const filters = await this.parseIcpToFilters(input);
+        const pruned = pruneFilters(filters);
+        ensureConfigured();
+        const { params, total } = await findWorkingFilters(pruned);
+        return {
+          audienceRef: `os:${Buffer.from(JSON.stringify(params)).toString("base64")}`,
+          listSize: Math.min(total, MAX_PROSPECTS),
+          total,
+        };
+      }
+    );
   }
 
   /** Pull real prospects for the encoded audience; best-effort contact enrichment on top. */
   async enrichAudience(audienceRef: string): Promise<FiberProspect[]> {
+    return withCache(cacheKey("os-enrich", { audienceRef, max: MAX_PROSPECTS }), ONE_DAY, () =>
+      this.enrichAudienceUncached(audienceRef)
+    );
+  }
+
+  private async enrichAudienceUncached(audienceRef: string): Promise<FiberProspect[]> {
     const pruned = decodeAudienceRef(audienceRef);
     ensureConfigured();
     const res = await oceanSearchPeople({
