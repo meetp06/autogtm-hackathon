@@ -85,9 +85,9 @@ export async function generateAdImage(input: AdGenerationInput): Promise<AdGener
   try {
     const image = await openai.images.generate({
       model: "gpt-image-1",
-      prompt: `${input.imagePrompt}\n\nBrand voice: ${input.brandKit.voice}. Audience: ${input.brandKit.audience}. Primary color: ${input.brandKit.colors.primary}.`,
+      prompt: `${input.imagePrompt}\n\nBrand voice: ${input.brandKit.voice}. Audience: ${input.brandKit.audience}. Primary color: ${input.brandKit.colors.primary}. Positioning: ${input.brandKit.positioning}. Value props: ${input.brandKit.valueProps.join(", ")}.`,
       size: size as "1024x1536" | "1536x1024",
-      quality: "medium",
+      quality: "high",
     });
     imageBase64 = image.data?.[0]?.b64_json ?? null;
   } catch (err) {

@@ -57,7 +57,7 @@ export async function runCreativeStudio(input: {
   let caption = `${input.angleHeadline} — built for ${input.audience}. ${input.description}`;
   let cta = "Learn more";
   let hashtags = ["#launch", "#startup", "#marketing"];
-  let imagePrompt = `On-brand social ad for ${input.product}, angle '${input.angleHeadline}'. ${brandKit.voice}. Bold product hero, single CTA. No real logos or people.`;
+  let imagePrompt = `Professional social ad for ${input.product}, angle '${input.angleHeadline}'. ${brandKit.voice}. Style: clean product photography, dramatic lighting, high contrast. Composition: product hero centered, minimalist background, single clear focal point. Color palette: ${brandKit.colors.primary} dominant with ${brandKit.colors.accent ?? "dark"} accents. Mood: confident, premium, modern. Platform: ${targetPlatform}.`;
 
   // Copy is written by Orange Slice AI; image is rendered by OpenAI gpt-image-1.
   if (hasOrangeSliceKey()) {
@@ -69,7 +69,11 @@ export async function runCreativeStudio(input: {
       post_time?: string;
       platform?: "instagram" | "linkedin";
     }>({
-      system: `Write a ${targetPlatform} caption using the brand kit context. Return image_prompt, caption, cta, hashtags[], post_time, platform.`,
+      system: `You are a world-class creative director. Write a ${targetPlatform} caption and a detailed image generation prompt using the brand kit context.
+
+For the image_prompt: Describe the visual in vivid detail — subject, composition, lighting, color palette, mood, and platform-specific framing (portrait for Instagram, landscape for LinkedIn). Direct an AI image model to produce a scroll-stopping, on-brand photo.
+
+Return image_prompt, caption, cta, hashtags[], post_time, platform.`,
       prompt: JSON.stringify({ ...input, brandKit, platform: targetPlatform }),
       schema: CAPTION_SCHEMA,
     });
