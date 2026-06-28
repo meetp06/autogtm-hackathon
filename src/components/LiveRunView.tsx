@@ -13,20 +13,23 @@ const B2C_AGENTS = [
 const B2B_AGENTS = [
   { id: "market", label: "Market Pulse", color: "var(--amber)", desc: "Reviews + intent signals" },
   { id: "demand", label: "Demand Gap", color: "var(--green)", desc: "Locks the angle" },
-  { id: "audience", label: "Audience Finder", color: "var(--orange)", desc: "Orange Slice enrichment" },
+  { id: "audience", label: "Audience Finder", color: "var(--orange)", desc: "Fiber estimate + enrichment" },
   { id: "creative", label: "Creative Studio", color: "var(--violet)", desc: "Post + outreach drafts" },
 ] as const;
 
 type Props = {
   campaignId: Id<"campaigns">;
   product: string;
+  onConfirmAudience?: () => void;
+  confirmingAudience?: boolean;
 };
 
-export function LiveRunView({ campaignId, product }: Props) {
+export function LiveRunView({ campaignId, product, onConfirmAudience, confirmingAudience }: Props) {
   const campaign = useQuery(api.campaigns.get, { campaignId });
   const logs = useQuery(api.campaigns.getActivityLogs, { campaignId });
   const signals = useQuery(api.campaigns.getSignals, { campaignId });
   const prospects = useQuery(api.campaigns.getProspects, { campaignId });
+  const audience = useQuery(api.campaigns.getAudience, { campaignId });
 
   const isB2B = (campaign?.mode ?? "b2c") === "b2b";
   const AGENTS = isB2B ? B2B_AGENTS : B2C_AGENTS;
@@ -37,7 +40,7 @@ export function LiveRunView({ campaignId, product }: Props) {
       ? "market"
       : status === "angle_ready"
         ? "demand"
-        : status === "finding_audience"
+        : status === "building_audience" || status === "finding_audience"
           ? "audience"
           : status === "audience_ready" || status === "creative_ready" || status === "ready_to_post"
             ? "creative"
@@ -80,6 +83,9 @@ export function LiveRunView({ campaignId, product }: Props) {
             prospects={prospects ?? []}
             status={status}
             isSample={campaign?.isSampleProspects}
+            audience={audience ?? null}
+            onConfirmAudience={onConfirmAudience}
+            confirmingAudience={confirmingAudience}
           />
         )}
 
@@ -101,6 +107,8 @@ export function LiveRunView({ campaignId, product }: Props) {
         status={status}
         signalCount={signals?.length ?? 0}
         prospectCount={prospects?.length ?? 0}
+        audienceEstimate={audience?.estimatedCredits}
+        audienceState={audience?.state}
         isB2B={isB2B}
         isSample={campaign?.isSampleData}
         isSampleProspects={campaign?.isSampleProspects}
@@ -113,6 +121,9 @@ function AudiencePanel({
   prospects,
   status,
   isSample,
+  audience,
+  onConfirmAudience,
+  confirmingAudience,
 }: {
   prospects: Array<{
     name: string;
@@ -123,20 +134,57 @@ function AudiencePanel({
   }>;
   status: string;
   isSample?: boolean;
+  audience?: {
+    estimatedCredits: number;
+    availableCredits?: number;
+    listSize: number;
+    state: string;
+  } | null;
+  onConfirmAudience?: () => void;
+  confirmingAudience?: boolean;
 }) {
-  const loading = status === "finding_audience" || (status === "angle_ready" && prospects.length === 0);
+  const waitingForConfirm =
+    status === "building_audience" &&
+    audience?.state === "estimated" &&
+    prospects.length === 0;
+  const loading =
+    (status === "building_audience" && !waitingForConfirm) ||
+    status === "finding_audience" ||
+    (status === "angle_ready" && prospects.length === 0);
 
   return (
     <div className="rounded-xl border border-[var(--orange)]/30 bg-[var(--orange)]/5 p-4">
       <div className="flex items-center justify-between mb-3">
-        <p className="mono text-xs text-[var(--orange)]">audience.orange_slice</p>
+        <p className="mono text-xs text-[var(--orange)]">audience.fiber</p>
         <span className="text-xs text-neutral-500">
-          {loading ? "enriching…" : `${prospects.length} prospects`}
+          {waitingForConfirm ? "estimate ready" : loading ? "building..." : `${prospects.length} prospects`}
           {isSample && prospects.length > 0 ? " (sample)" : ""}
         </span>
       </div>
-      {prospects.length === 0 ? (
-        <p className="text-sm text-neutral-500">Resolving ICP into qualified buyer list…</p>
+      {waitingForConfirm && audience ? (
+        <div className="space-y-3">
+          <div className="rounded-lg border border-[var(--orange)]/40 bg-black/30 p-3">
+            <p className="text-sm text-neutral-300">
+              This will cost{" "}
+              <span className="font-semibold text-[var(--orange)]">{audience.estimatedCredits} Fiber credits</span>{" "}
+              to enrich up to {audience.listSize} prospects. Proceed?
+            </p>
+            {audience.availableCredits !== undefined && (
+              <p className="mt-1 text-xs text-neutral-500">
+                Fiber credits available: {audience.availableCredits}
+              </p>
+            )}
+          </div>
+          <button
+            onClick={onConfirmAudience}
+            disabled={!onConfirmAudience || confirmingAudience}
+            className="w-full rounded-lg bg-[var(--orange)] px-4 py-2 text-xs font-semibold text-black disabled:opacity-50"
+          >
+            {confirmingAudience ? "Enriching with Fiber..." : "Confirm Fiber enrichment"}
+          </button>
+        </div>
+      ) : prospects.length === 0 ? (
+        <p className="text-sm text-neutral-500">Resolving ICP into a qualified buyer list...</p>
       ) : (
         <div className="space-y-2 max-h-40 overflow-y-auto">
           {prospects.slice(0, 4).map((p, i) => (
@@ -164,6 +212,8 @@ function ConvexStateTable({
   status,
   signalCount,
   prospectCount,
+  audienceEstimate,
+  audienceState,
   isB2B,
   isSample,
   isSampleProspects,
@@ -171,6 +221,8 @@ function ConvexStateTable({
   status: string;
   signalCount: number;
   prospectCount: number;
+  audienceEstimate?: number;
+  audienceState?: string;
   isB2B: boolean;
   isSample?: boolean;
   isSampleProspects?: boolean;
@@ -181,7 +233,13 @@ function ConvexStateTable({
     ...(isB2B
       ? [{ table: "prospects", field: "count", value: String(prospectCount) }]
       : []),
-    { table: "demand", field: "locked", value: ["angle_ready", "finding_audience", "audience_ready", "creative_ready", "ready_to_post", "posted"].includes(status) ? "yes" : "pending" },
+    ...(isB2B && audienceEstimate !== undefined
+      ? [{ table: "audiences", field: "estimate", value: `${audienceEstimate} credits` }]
+      : []),
+    ...(isB2B && audienceState
+      ? [{ table: "audiences", field: "state", value: audienceState }]
+      : []),
+    { table: "demand", field: "locked", value: ["angle_ready", "building_audience", "finding_audience", "audience_ready", "creative_ready", "ready_to_post", "posted"].includes(status) ? "yes" : "pending" },
     { table: "creatives", field: "ready", value: status === "ready_to_post" || status === "posted" ? "yes" : "pending" },
     { table: "meta", field: "sample_mode", value: isSample ? "true" : "false" },
     ...(isB2B

@@ -10,6 +10,14 @@
   --line: rgba(255, 255, 255, 0.06);
   --pill: rgba(255, 255, 255, 0.10);
   --dark-text: #171719;
+  --background: #050505;
+  --foreground: #f4f3f1;
+  --panel: #101011;
+  --border: rgba(255, 255, 255, 0.10);
+  --orange: #ff7a1a;
+  --amber: #f2b84b;
+  --green: #79d99a;
+  --violet: #b7a6ff;
 }
 
 @theme inline {
@@ -47,6 +55,28 @@ button:focus-visible,
 a:focus-visible {
   outline: 1px solid rgba(244, 243, 241, 0.86);
   outline-offset: 4px;
+}
+
+.mono {
+  font-family: "Inter", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dot-sun {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 122, 26, 0.9), rgba(255, 122, 26, 0.15) 54%, transparent 66%),
+    radial-gradient(circle at 50% 50%, rgba(244, 243, 241, 0.55), transparent 58%);
+  box-shadow: 0 0 60px rgba(255, 122, 26, 0.28);
+}
+
+.agent-pulse {
+  box-shadow: 0 0 0 1px rgba(255, 122, 26, 0.22), 0 0 36px rgba(255, 122, 26, 0.14);
+  animation: pulse-glow 2.8s ease-in-out infinite;
+}
+
+.log-line {
+  animation: fade-up 280ms ease both;
 }
 
 .ritual-page {
@@ -416,6 +446,16 @@ a:focus-visible {
 @keyframes slow-spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 1px rgba(255, 122, 26, 0.18), 0 0 26px rgba(255, 122, 26, 0.10);
+  }
+  50% {
+    box-shadow: 0 0 0 1px rgba(255, 122, 26, 0.34), 0 0 44px rgba(255, 122, 26, 0.18);
   }
 }
 

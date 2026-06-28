@@ -1,15 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
-import { runPipeline } from "@/lib/pipeline";
+import { confirmFiberAudience, runPipeline } from "@/lib/pipeline";
 import { Id } from "convex/_generated/dataModel";
 
 export async function POST(req: NextRequest) {
   try {
-    const { campaignId } = (await req.json()) as { campaignId: Id<"campaigns"> };
+    const { campaignId, action } = (await req.json()) as {
+      campaignId: Id<"campaigns">;
+      action?: "confirm_fiber_enrichment";
+    };
     if (!campaignId) {
       return NextResponse.json({ error: "campaignId required" }, { status: 400 });
     }
 
-    await runPipeline(campaignId);
+    if (action === "confirm_fiber_enrichment") {
+      await confirmFiberAudience(campaignId);
+    } else {
+      await runPipeline(campaignId);
+    }
     return NextResponse.json({ ok: true });
   } catch (error) {
     return NextResponse.json(

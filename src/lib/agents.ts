@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 import FirecrawlApp from "@mendable/firecrawl-js";
-import { OrangeSliceClient } from "@/lib/orange-slice/client";
+import { FiberClient } from "@/lib/fiber/client";
 import { GooseworksClient } from "@/lib/gooseworks/client";
 
 function getOpenAI() {
@@ -70,7 +70,7 @@ export async function runMarketPulse(input: {
   if (!process.env.OPENAI_API_KEY || isSample || !scraped) {
     const output = { ...SAMPLE_MARKET };
     if (input.mode === "b2b") {
-      const intent = await OrangeSliceClient.fromEnv().getIntentSignals({
+      const intent = await FiberClient.fromEnv().getIntentSignals({
         product: input.product,
         category: input.description,
         icp: input.icp ?? input.audience,
@@ -93,7 +93,7 @@ export async function runMarketPulse(input: {
   if (!openai) {
     const output = { ...SAMPLE_MARKET };
     if (input.mode === "b2b") {
-      const intent = await OrangeSliceClient.fromEnv().getIntentSignals({
+      const intent = await FiberClient.fromEnv().getIntentSignals({
         product: input.product,
         category: input.description,
         icp: input.icp ?? input.audience,
@@ -131,7 +131,7 @@ export async function runMarketPulse(input: {
   const parsed = JSON.parse(response.choices[0]?.message?.content ?? "{}") as MarketPulseOutput;
 
   if (input.mode === "b2b") {
-    const intent = await OrangeSliceClient.fromEnv().getIntentSignals({
+    const intent = await FiberClient.fromEnv().getIntentSignals({
       product: input.product,
       category: input.description,
       icp: input.icp ?? input.audience,

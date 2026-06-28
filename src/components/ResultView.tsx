@@ -128,7 +128,7 @@ export function ResultView({ campaignId, onReset }: Props) {
           {isB2B && prospects && prospects.length > 0 && (
             <section className="rounded-xl border border-[var(--orange)]/30 bg-[var(--orange)]/5 p-4">
               <div className="flex items-center justify-between mb-3">
-                <p className="mono text-xs text-[var(--orange)]">audience · orange slice</p>
+                <p className="mono text-xs text-[var(--orange)]">audience · fiber</p>
                 <span className="text-xs text-neutral-500">
                   {prospects.length} enriched{campaign?.isSampleProspects ? " (sample)" : ""}
                 </span>
@@ -138,6 +138,11 @@ export function ResultView({ campaignId, onReset }: Props) {
                   <div key={p._id} className="border-l-2 border-[var(--orange)] pl-3">
                     <p className="font-medium">{p.name} — {p.role}</p>
                     <p className="text-neutral-500 text-xs">{p.company} · {p.intentSignal}</p>
+                    {(p.workEmail || p.phone) && (
+                      <p className="text-neutral-500 text-xs">
+                        {[p.workEmail, p.phone].filter(Boolean).join(" · ")}
+                      </p>
+                    )}
                   </div>
                 ))}
               </div>

@@ -156,6 +156,12 @@ export const getProspects = query({
     ctx.db.query("prospects").withIndex("by_campaign", (q) => q.eq("campaignId", args.campaignId)).collect(),
 });
 
+export const getAudience = query({
+  args: { campaignId: v.id("campaigns") },
+  handler: async (ctx, args) =>
+    ctx.db.query("audiences").withIndex("by_campaign", (q) => q.eq("campaignId", args.campaignId)).first(),
+});
+
 export const getOutreach = query({
   args: { campaignId: v.id("campaigns") },
   handler: async (ctx, args) => {
@@ -226,6 +232,7 @@ export const setStatus = mutation({
       v.literal("queued"),
       v.literal("researching"),
       v.literal("angle_ready"),
+      v.literal("building_audience"),
       v.literal("finding_audience"),
       v.literal("audience_ready"),
       v.literal("creative_ready"),
@@ -336,6 +343,87 @@ export const saveDemand = mutation({
   },
 });
 
+export const saveAudienceEstimate = mutation({
+  args: {
+    campaignId: v.id("campaigns"),
+    fiberAudienceId: v.string(),
+    query: v.string(),
+    estimatedCredits: v.number(),
+    availableCredits: v.optional(v.number()),
+    listSize: v.number(),
+    state: v.union(v.literal("built"), v.literal("estimated"), v.literal("sample")),
+    chargeInfo: v.optional(v.any()),
+  },
+  handler: async (ctx, args) => {
+    const existing = await ctx.db
+      .query("audiences")
+      .withIndex("by_campaign", (q) => q.eq("campaignId", args.campaignId))
+      .first();
+    const now = new Date().toISOString();
+    const payload = {
+      campaignId: args.campaignId,
+      fiberAudienceId: args.fiberAudienceId,
+      query: args.query,
+      estimatedCredits: args.estimatedCredits,
+      ...(args.availableCredits !== undefined ? { availableCredits: args.availableCredits } : {}),
+      listSize: args.listSize,
+      state: args.state,
+      ...(args.chargeInfo !== undefined ? { chargeInfo: args.chargeInfo } : {}),
+      updatedAt: now,
+    };
+
+    if (existing) {
+      await ctx.db.patch(existing._id, payload);
+    } else {
+      await ctx.db.insert("audiences", payload);
+    }
+
+    await logActivity(
+      ctx,
+      args.campaignId,
+      "audience",
+      args.state === "sample"
+        ? `Fiber audience estimate unavailable — sample list queued`
+        : `Fiber estimated ${args.estimatedCredits} credits for ${args.listSize} prospects`,
+      args.state === "sample" ? "warn" : "success"
+    );
+  },
+});
+
+export const updateAudienceState = mutation({
+  args: {
+    campaignId: v.id("campaigns"),
+    state: v.union(
+      v.literal("built"),
+      v.literal("estimated"),
+      v.literal("enriching"),
+      v.literal("enriched"),
+      v.literal("exported"),
+      v.literal("sample")
+    ),
+    estimatedCredits: v.optional(v.number()),
+    listSize: v.optional(v.number()),
+    chargeInfo: v.optional(v.any()),
+    confirmedAt: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const audience = await ctx.db
+      .query("audiences")
+      .withIndex("by_campaign", (q) => q.eq("campaignId", args.campaignId))
+      .first();
+    if (!audience) throw new Error("Audience not found");
+
+    await ctx.db.patch(audience._id, {
+      state: args.state,
+      ...(args.estimatedCredits !== undefined ? { estimatedCredits: args.estimatedCredits } : {}),
+      ...(args.listSize !== undefined ? { listSize: args.listSize } : {}),
+      ...(args.chargeInfo !== undefined ? { chargeInfo: args.chargeInfo } : {}),
+      ...(args.confirmedAt !== undefined ? { confirmedAt: args.confirmedAt } : {}),
+      updatedAt: new Date().toISOString(),
+    });
+  },
+});
+
 export const saveBrandKit = mutation({
   args: {
     campaignId: v.id("campaigns"),
@@ -437,8 +525,11 @@ export const saveProspects = mutation({
         role: v.string(),
         company: v.string(),
         linkedinUrl: v.string(),
+        workEmail: v.optional(v.string()),
+        phone: v.optional(v.string()),
         companyContext: v.string(),
         intentSignal: v.string(),
+        source: v.optional(v.string()),
         sourceUrl: v.string(),
       })
     ),
@@ -453,8 +544,11 @@ export const saveProspects = mutation({
         role: p.role,
         company: p.company,
         linkedinUrl: p.linkedinUrl,
+        ...(p.workEmail !== undefined ? { workEmail: p.workEmail } : {}),
+        ...(p.phone !== undefined ? { phone: p.phone } : {}),
         companyContext: p.companyContext,
         intentSignal: p.intentSignal,
+        ...(p.source !== undefined ? { source: p.source } : {}),
         sourceUrl: p.sourceUrl,
         enrichedAt: now,
       });

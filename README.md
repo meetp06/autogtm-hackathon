@@ -8,6 +8,7 @@ Multi-agent GTM pipeline: market research → demand gap → creative → staged
 - **Convex** — real-time state machine + file storage
 - **OpenAI** — agent reasoning + image generation
 - **Gooseworks** — creative execution: brand kit, ad generation, QC gate (via `GooseworksClient` adapter)
+- **Fiber AI** — B2B audience building, enrichment, and buying signals
 - **Composio** — OAuth publishing to Instagram/LinkedIn
 
 ## Quick start
@@ -28,6 +29,7 @@ Copy `.env.example` to `.env.local` and fill in:
 ```
 OPENAI_API_KEY=
 FIRECRAWL_API_KEY=
+FIBER_API_KEY=
 COMPOSIO_API_KEY=
 NEXT_PUBLIC_CONVEX_URL=       # set by `npx convex dev`
 CONVEX_DEPLOYMENT=            # set by `npx convex dev`
@@ -51,21 +53,22 @@ Verified skill slugs (from goose-skills repo):
 
 Set `FAL_API_KEY` for Gooseworks-aligned image gen. Without Gooseworks login, pipeline uses sample/fallback paths clearly labeled.
 
-**Role split:** Orange Slice = WHO · Your agents = WHAT · Gooseworks = THE CREATIVE · AutoGTM = orchestration
+**Role split:** Fiber = WHO · Your agents = WHAT · Gooseworks = THE CREATIVE · AutoGTM = orchestration
 
-## B2B lane (Orange Slice)
+## B2B lane (Fiber AI)
 
 Toggle **B2B** on intake. Pipeline adds:
 
-1. **Market Pulse** — Firecrawl reviews + Orange Slice buying-intent signals
+1. **Market Pulse** — Firecrawl reviews + Fiber buying-intent signals
 2. **Demand Gap** — locks marketing angle
-3. **Audience Finder** (Agent 4) — Orange Slice enriches ICP → `prospects` table
-4. **Creative Studio** — LinkedIn broadcast + per-prospect outreach drafts
-5. **Distribution** — approve broadcast + approve each outreach draft (you send manually)
+3. **Audience Finder** (Agent 4) — Fiber creates/builds audience, estimates enrichment credits, then waits for approval
+4. **Fiber enrichment** — after explicit approval, exports real prospects into `prospects`
+5. **Creative Studio** — LinkedIn broadcast + per-prospect outreach drafts
+6. **Distribution** — approve broadcast + approve each outreach draft (you send manually)
 
-Status: `queued → researching → angle_ready → finding_audience → audience_ready → creative_ready → ready_to_post → posted`
+Status: `queued → researching → angle_ready → building_audience → audience_ready → creative_ready → ready_to_post → posted`
 
-Set `ORANGE_SLICE_API_KEY` from the Orange Slice booth. Without it, sample prospects are clearly labeled.
+Set `FIBER_API_KEY` from [fiber.ai/app/api](https://fiber.ai/app/api). Without it, sample prospects are clearly labeled.
 
 ## B2C lane
 

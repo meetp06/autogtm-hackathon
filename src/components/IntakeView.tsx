@@ -27,7 +27,7 @@ export function IntakeView({ data, onChange, onNext }: Props) {
         <h1 className="text-3xl font-semibold tracking-tight">Signal to post in under two minutes</h1>
         <p className="text-sm text-neutral-400">
           {data.mode === "b2b"
-            ? "Find buyers with Orange Slice, lock the angle, draft personalized outreach — you approve every send."
+            ? "Find buyers with Fiber, lock the angle, draft personalized outreach — you approve every send."
             : "Type what you're selling. Agents read the market, lock the angle, and stage a post for your approval."}
         </p>
       </header>
@@ -122,7 +122,7 @@ export function FollowUpView({ data, onChange, onLaunch, loading }: FollowUpProp
       <h2 className="text-xl font-semibold">Quick qualifiers</h2>
       <p className="text-sm text-neutral-400">
         {isB2B
-          ? "Your ICP goes straight to Orange Slice as a prospecting query."
+          ? "Your ICP goes straight to Fiber as a prospecting query."
           : "Four taps — then the agent pod runs."}
       </p>
 
@@ -209,7 +209,7 @@ export function FollowUpView({ data, onChange, onLaunch, loading }: FollowUpProp
 
       {isB2B && (
         <p className="text-xs text-neutral-500 border border-[var(--border)] rounded-lg p-3">
-          B2B lane: LinkedIn broadcast + per-prospect outreach drafts. Orange Slice enriches real buyers — you send from your own account.
+          B2B lane: LinkedIn broadcast + per-prospect outreach drafts. Fiber estimates credits first, then enriches real buyers only after your approval.
         </p>
       )}
 
