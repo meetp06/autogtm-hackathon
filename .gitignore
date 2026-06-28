@@ -46,11 +46,3 @@ next-env.d.ts
 .agents/
 skills-lock.json
 scripts/smoke-*.cjs
-
-# OpenNext
-.open-next
-
-# wrangler files
-.wrangler
-.dev.vars*
-!.dev.vars.example

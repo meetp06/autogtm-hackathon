@@ -3,20 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "opennextjs-cloudflare build",
-    "build:next": "next build",
     "dev": "next dev",
     "dev:all": "npx convex dev --start 'next dev'",
+    "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
-    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
+    "lint": "eslint"
   },
   "dependencies": {
     "@fiberai/sdk": "^0.0.34",
-    "@opennextjs/cloudflare": "^1.20.1",
     "convex": "^1.42.0",
     "next": "16.2.9",
     "openai": "^6.45.0",
@@ -33,7 +27,6 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
     "tailwindcss": "^4",
-    "typescript": "^5",
-    "wrangler": "^4.105.0"
+    "typescript": "^5"
   }
 }
