@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { B2B_DEFAULT, B2C_DEFAULT, CRUITICAL_DEMO, IntakeData, Platform, PriceTier } from "@/lib/types";
 
 type Props = {
@@ -8,8 +9,140 @@ type Props = {
   onNext: () => void;
 };
 
+type BriefRequirement = {
+  key: keyof Pick<IntakeData, "product" | "description" | "audience" | "differentiator">;
+  label: string;
+  helper: string;
+  met: boolean;
+};
+
+function countWords(value: string) {
+  return value.trim().split(/\s+/).filter(Boolean).length;
+}
+
+function hasEnoughDetail(value: string, minWords: number, minChars: number) {
+  const trimmed = value.trim();
+  return trimmed.length >= minChars && countWords(trimmed) >= minWords;
+}
+
+function getBriefRequirements(data: IntakeData): BriefRequirement[] {
+  const buyerLabel = data.mode === "b2b" ? "Target buyers" : "Target audience";
+
+  return [
+    {
+      key: "product",
+      label: "Product name",
+      helper: "Name the product or offer.",
+      met: data.product.trim().length >= 2,
+    },
+    {
+      key: "description",
+      label: "What it does",
+      helper: "Write one specific sentence with the problem, outcome, or use case.",
+      met: hasEnoughDetail(data.description, 7, 42),
+    },
+    {
+      key: "audience",
+      label: buyerLabel,
+      helper:
+        data.mode === "b2b"
+          ? "Name a role, company stage or type, and buying situation."
+          : "Name the buyer segment and the moment they would want this.",
+      met: hasEnoughDetail(data.audience, 5, 28),
+    },
+    {
+      key: "differentiator",
+      label: "Why this wins",
+      helper: "Explain the strongest advantage, proof point, or urgency.",
+      met: hasEnoughDetail(data.differentiator, 5, 32),
+    },
+  ];
+}
+
+function getNextMissingRequirement(requirements: BriefRequirement[]) {
+  return requirements.find((requirement) => !requirement.met);
+}
+
+function includesAny(text: string, terms: string[]) {
+  return terms.some((term) => text.includes(term));
+}
+
+function inferPlatform(data: IntakeData): Platform {
+  if (data.mode === "b2b") return "linkedin";
+
+  const text = `${data.product} ${data.description} ${data.audience} ${data.differentiator}`.toLowerCase();
+  const professionalSignals = [
+    "b2b",
+    "business",
+    "company",
+    "enterprise",
+    "founder",
+    "linkedin",
+    "sales",
+    "smb",
+    "team",
+  ];
+  const visualSignals = [
+    "beauty",
+    "consumer",
+    "drink",
+    "fitness",
+    "food",
+    "home",
+    "instagram",
+    "parent",
+    "style",
+    "wearable",
+  ];
+
+  const professional = includesAny(text, professionalSignals);
+  const visual = includesAny(text, visualSignals);
+
+  if (professional && visual) return "both";
+  if (professional) return "linkedin";
+  return "instagram";
+}
+
+function inferPriceTier(data: IntakeData): PriceTier {
+  const text = `${data.product} ${data.description} ${data.audience} ${data.differentiator}`.toLowerCase();
+
+  if (
+    data.mode === "b2b" ||
+    includesAny(text, ["enterprise", "executive", "compliance", "revenue", "vp ", "cto", "series a", "premium"])
+  ) {
+    return "premium";
+  }
+
+  if (includesAny(text, ["student", "budget", "free", "discount", "mass market", "low cost"])) {
+    return "budget";
+  }
+
+  return "mid";
+}
+
+function applyExpertJudgment(data: IntakeData): IntakeData {
+  return {
+    ...data,
+    audience:
+      data.audience.trim() ||
+      (data.mode === "b2b"
+        ? "Revenue leaders at growing software companies with urgent pipeline goals"
+        : "Motivated buyers who feel the problem now and can act this week"),
+    differentiator:
+      data.differentiator.trim() ||
+      "Clearer outcome, faster time to value, and lower execution effort than the default alternative",
+    platform: inferPlatform(data),
+    priceTier: inferPriceTier(data),
+  };
+}
+
 export function IntakeView({ data, onChange, onNext }: Props) {
-  const canContinue = data.product.trim().length > 0 && data.description.trim().length > 0;
+  const requirements = getBriefRequirements(data);
+  const missingRequirements = requirements.filter((requirement) => !requirement.met);
+  const nextMissingRequirement = getNextMissingRequirement(requirements);
+  const canContinue = missingRequirements.length === 0;
+  const shouldAskAudience = requirements[0].met && requirements[1].met;
+  const shouldAskDifferentiator = shouldAskAudience && requirements[2].met;
 
   function setMode(mode: "b2c" | "b2b") {
     if (mode === "b2b") {
@@ -89,12 +222,88 @@ export function IntakeView({ data, onChange, onNext }: Props) {
             />
           </label>
 
+          {shouldAskAudience && (
+            <label className="block space-y-2">
+              <span className="mono text-xs text-[var(--faint)]">
+                {data.mode === "b2b" ? "TARGET BUYERS" : "TARGET AUDIENCE"}
+              </span>
+              <input
+                className="w-full rounded-lg border border-[var(--border)] bg-[var(--field)] px-4 py-3 text-sm outline-none focus:border-[var(--orange)]"
+                placeholder={
+                  data.mode === "b2b"
+                    ? "e.g. VP Growth at Series A-B SaaS teams scaling outbound"
+                    : "e.g. Busy parents buying a health coach after a wearable alert"
+                }
+                value={data.audience}
+                onChange={(e) => onChange({ ...data, audience: e.target.value })}
+              />
+            </label>
+          )}
+
+          {shouldAskDifferentiator && (
+            <label className="block space-y-2">
+              <span className="mono text-xs text-[var(--faint)]">KEY ADVANTAGE</span>
+              <input
+                className="w-full rounded-lg border border-[var(--border)] bg-[var(--field)] px-4 py-3 text-sm outline-none focus:border-[var(--orange)]"
+                placeholder={
+                  data.mode === "b2b"
+                    ? "e.g. Cuts research, angle, and outreach drafting into one approved workflow"
+                    : "e.g. Calls the user before a missed habit becomes a health setback"
+                }
+                value={data.differentiator}
+                onChange={(e) => onChange({ ...data, differentiator: e.target.value })}
+              />
+            </label>
+          )}
+
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--field)] p-4" aria-live="polite">
+            <div className="flex items-start justify-between gap-4">
+              <div className="space-y-1">
+                <p className="mono text-xs text-[var(--faint)]">BRIEF READINESS</p>
+                <p className="text-sm font-semibold text-[var(--ink)]">
+                  {canContinue
+                    ? "Enough context to continue."
+                    : `Need ${missingRequirements.length} more ${
+                        missingRequirements.length === 1 ? "detail" : "details"
+                      }.`}
+                </p>
+              </div>
+              <span className="rounded-full bg-[var(--sand)] px-3 py-1 text-xs font-semibold text-[var(--accent-text)]">
+                {requirements.length - missingRequirements.length}/{requirements.length}
+              </span>
+            </div>
+            {!canContinue && nextMissingRequirement && (
+              <p className="mt-3 text-sm text-[var(--muted)]">
+                Next: {nextMissingRequirement.helper}
+              </p>
+            )}
+            <div className="mt-4 grid gap-2">
+              {requirements.map((requirement) => (
+                <div key={requirement.key} className="flex items-start gap-2 text-xs text-[var(--muted)]">
+                  <span
+                    className={`mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border text-[10px] ${
+                      requirement.met
+                        ? "border-[var(--orange)] bg-[var(--orange)] text-[var(--accent-ink)]"
+                        : "border-[var(--border)] bg-[var(--panel)]"
+                    }`}
+                  >
+                    {requirement.met ? "✓" : ""}
+                  </span>
+                  <span>
+                    <span className="font-semibold text-[var(--ink)]">{requirement.label}</span>
+                    {!requirement.met && ` - ${requirement.helper}`}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <button
             disabled={!canContinue}
             onClick={onNext}
             className="w-full lex-pill px-4 py-3 text-sm font-semibold text-[var(--accent-ink)] disabled:opacity-40 hover:brightness-110 transition"
           >
-            Forge campaign →
+            {canContinue ? "Forge campaign →" : "Answer more details"}
           </button>
         </div>
       </section>
@@ -157,16 +366,21 @@ function PipelinePreview({ mode, product }: { mode: "b2b" | "b2c"; product: stri
 type FollowUpProps = {
   data: IntakeData;
   onChange: (data: IntakeData) => void;
-  onLaunch: () => void;
+  onLaunch: (data?: IntakeData) => void;
   loading?: boolean;
 };
 
-const B2C_AUDIENCE_CHIPS = ["Founders", "Consumers", "SMB teams", "Enterprise buyers"];
+const B2C_AUDIENCE_CHIPS = [
+  "Founders testing GTM tools before launch",
+  "Consumers replacing a frustrating daily routine",
+  "SMB teams trying to reduce manual work",
+  "Enterprise buyers comparing high-trust vendors",
+];
 const B2B_ICP_CHIPS = [
-  "VP Growth at Series A SaaS",
-  "RevOps leaders at fintech",
-  "Founders scaling outbound",
-  "Head of Sales at dev tools",
+  "VP Growth at Series A SaaS teams scaling outbound",
+  "RevOps leaders at fintech companies modernizing pipeline",
+  "Founders at B2B startups building repeatable sales",
+  "Heads of Sales at dev tools companies expanding pipeline",
 ];
 const PLATFORM_CHIPS: { label: string; value: Platform }[] = [
   { label: "Instagram", value: "instagram" },
@@ -180,17 +394,66 @@ const TIER_CHIPS: { label: string; value: PriceTier }[] = [
 ];
 
 export function FollowUpView({ data, onChange, onLaunch, loading }: FollowUpProps) {
+  const [useExpertJudgment, setUseExpertJudgment] = useState(true);
   const isB2B = data.mode === "b2b";
-  const canLaunch = data.audience.trim().length > 0 && data.differentiator.trim().length > 0;
+  const expertData = useMemo(() => applyExpertJudgment(data), [data]);
+  const visibleData = useExpertJudgment ? expertData : data;
+  const missingRequirements = getBriefRequirements(visibleData).filter((requirement) => !requirement.met);
+  const canLaunch = missingRequirements.length === 0;
+
+  function updateManually(nextData: IntakeData) {
+    setUseExpertJudgment(false);
+    onChange(nextData);
+  }
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <h2 className="text-xl font-semibold">Campaign qualifiers</h2>
       <p className="text-sm text-[var(--muted)]">
         {isB2B
-          ? "Tune the buyer list and differentiator before the audience estimate."
-          : "Tune the audience, platform, and price signal before creative generation."}
+          ? "Let Forge pick the buyer path from the brief, or take manual control."
+          : "Let Forge pick the channel and buying context from the brief, or take manual control."}
       </p>
+
+      <section className="rounded-2xl border border-[var(--border)] bg-[var(--panel)] shadow-[var(--shadow-sm)] p-4 space-y-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div className="space-y-1">
+            <p className="mono text-xs text-[var(--faint)]">SETUP MODE</p>
+            <p className="text-sm font-semibold text-[var(--ink)]">
+              {useExpertJudgment ? "Auto-selected with 30-year GTM judgment." : "Manual selections enabled."}
+            </p>
+          </div>
+          <div className="flex rounded-full border border-[var(--border)] bg-[var(--field)] p-1">
+            <button
+              type="button"
+              onClick={() => setUseExpertJudgment(true)}
+              className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+                useExpertJudgment ? "bg-[var(--orange)] text-[var(--accent-ink)]" : "text-[var(--muted)]"
+              }`}
+            >
+              Expert
+            </button>
+            <button
+              type="button"
+              onClick={() => setUseExpertJudgment(false)}
+              className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+                !useExpertJudgment ? "bg-[var(--orange)] text-[var(--accent-ink)]" : "text-[var(--muted)]"
+              }`}
+            >
+              Manual
+            </button>
+          </div>
+        </div>
+        <div className="grid gap-2 text-xs text-[var(--muted)] sm:grid-cols-2">
+          <p>
+            <span className="font-semibold text-[var(--ink)]">Channel:</span>{" "}
+            {expertData.platform === "both" ? "Instagram + LinkedIn" : expertData.platform}
+          </p>
+          <p>
+            <span className="font-semibold text-[var(--ink)]">Buying context:</span> {expertData.priceTier}
+          </p>
+        </div>
+      </section>
 
       <section className="space-y-3">
         <p className="mono text-xs text-[var(--faint)]">
@@ -200,9 +463,11 @@ export function FollowUpView({ data, onChange, onLaunch, loading }: FollowUpProp
           {(isB2B ? B2B_ICP_CHIPS : B2C_AUDIENCE_CHIPS).map((chip) => (
             <button
               key={chip}
-              onClick={() => onChange({ ...data, audience: chip, platform: isB2B ? "linkedin" : data.platform })}
+              onClick={() =>
+                updateManually({ ...visibleData, audience: chip, platform: isB2B ? "linkedin" : visibleData.platform })
+              }
               className={`rounded-full border px-3 py-1.5 text-xs transition ${
-                data.audience === chip
+                visibleData.audience === chip
                   ? "border-[var(--orange)] bg-[var(--orange)]/10 text-[var(--accent-text)]"
                   : "border-[var(--border)] text-[var(--muted)]"
               }`}
@@ -214,8 +479,8 @@ export function FollowUpView({ data, onChange, onLaunch, loading }: FollowUpProp
         <input
           className="w-full rounded-lg border border-[var(--border)] bg-[var(--panel)] shadow-[var(--shadow-sm)] px-3 py-2 text-sm"
           placeholder={isB2B ? "e.g. VP Growth at Series A–B SaaS scaling outbound" : "Or type custom audience"}
-          value={data.audience}
-          onChange={(e) => onChange({ ...data, audience: e.target.value })}
+          value={visibleData.audience}
+          onChange={(e) => updateManually({ ...visibleData, audience: e.target.value })}
         />
       </section>
 
@@ -228,8 +493,8 @@ export function FollowUpView({ data, onChange, onLaunch, loading }: FollowUpProp
               ? "e.g. Collapses research → angle → post in under 2 minutes"
               : "e.g. Only coach that calls you when vitals drift"
           }
-          value={data.differentiator}
-          onChange={(e) => onChange({ ...data, differentiator: e.target.value })}
+          value={visibleData.differentiator}
+          onChange={(e) => updateManually({ ...visibleData, differentiator: e.target.value })}
         />
       </section>
 
@@ -240,9 +505,9 @@ export function FollowUpView({ data, onChange, onLaunch, loading }: FollowUpProp
             {PLATFORM_CHIPS.map((chip) => (
               <button
                 key={chip.value}
-                onClick={() => onChange({ ...data, platform: chip.value })}
+                onClick={() => updateManually({ ...visibleData, platform: chip.value })}
                 className={`rounded-full border px-3 py-1.5 text-xs transition ${
-                  data.platform === chip.value
+                  visibleData.platform === chip.value
                     ? "border-[var(--orange)] bg-[var(--orange)]/10 text-[var(--accent-text)]"
                     : "border-[var(--border)] text-[var(--muted)]"
                 }`}
@@ -260,9 +525,9 @@ export function FollowUpView({ data, onChange, onLaunch, loading }: FollowUpProp
           {TIER_CHIPS.map((chip) => (
             <button
               key={chip.value}
-              onClick={() => onChange({ ...data, priceTier: chip.value })}
+              onClick={() => updateManually({ ...visibleData, priceTier: chip.value })}
               className={`rounded-full border px-3 py-1.5 text-xs transition ${
-                data.priceTier === chip.value
+                visibleData.priceTier === chip.value
                   ? "border-[var(--orange)] bg-[var(--orange)]/10 text-[var(--accent-text)]"
                   : "border-[var(--border)] text-[var(--muted)]"
               }`}
@@ -281,10 +546,10 @@ export function FollowUpView({ data, onChange, onLaunch, loading }: FollowUpProp
 
       <button
         disabled={!canLaunch || loading}
-        onClick={onLaunch}
+        onClick={() => onLaunch(visibleData)}
         className="w-full lex-pill px-4 py-3 text-sm font-semibold text-[var(--accent-ink)] disabled:opacity-40 hover:brightness-110 transition"
       >
-        {loading ? "Forging…" : "Forge campaign →"}
+        {loading ? "Forging…" : canLaunch ? "Forge campaign →" : "Complete the campaign brief"}
       </button>
     </div>
   );

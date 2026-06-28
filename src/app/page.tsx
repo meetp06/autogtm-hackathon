@@ -38,13 +38,14 @@ export default function Home() {
     }
   }
 
-  async function handleLaunch() {
+  async function handleLaunch(nextData = data) {
     setLaunching(true);
     setError(null);
+    setData(nextData);
     try {
       const id = await createCampaign({
-        ...data,
-        icpQuery: data.mode === "b2b" ? data.audience : undefined,
+        ...nextData,
+        icpQuery: nextData.mode === "b2b" ? nextData.audience : undefined,
       });
       setCampaignId(id);
       setView("live");
