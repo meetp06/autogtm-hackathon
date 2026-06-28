@@ -120,6 +120,23 @@ export const approveOutreach = mutation({
   },
 });
 
+export const markOutreachSent = mutation({
+  args: { campaignId: v.id("campaigns"), outreachId: v.id("outreach"), via: v.string() },
+  handler: async (ctx, args) => {
+    const row = await ctx.db.get(args.outreachId);
+    if (!row || row.campaignId !== args.campaignId) throw new Error("Outreach not found");
+    await ctx.db.patch(args.outreachId, { state: "sent" });
+    await logActivity(
+      ctx,
+      args.campaignId,
+      "distribution",
+      `Outreach email sent via ${args.via}`,
+      "success"
+    );
+    return { ok: true };
+  },
+});
+
 export const approveAllOutreach = mutation({
   args: {
     campaignId: v.id("campaigns"),
