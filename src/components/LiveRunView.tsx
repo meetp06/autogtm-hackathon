@@ -7,14 +7,14 @@ import { api } from "convex/_generated/api";
 const B2C_AGENTS = [
   { id: "market", label: "Signal Scan", color: "var(--amber)", desc: "Reddit + X + LinkedIn scrape" },
   { id: "demand", label: "Demand Angle", color: "var(--green)", desc: "Locks the angle" },
-  { id: "creative", label: "Campaign Forge", color: "var(--violet)", desc: "Image + caption" },
+  { id: "creative", label: "CampaignOS Studio", color: "var(--violet)", desc: "Image + caption" },
 ] as const;
 
 const B2B_AGENTS = [
   { id: "market", label: "Signal Scan", color: "var(--amber)", desc: "Scrape + intent signals" },
   { id: "demand", label: "Demand Angle", color: "var(--green)", desc: "Locks the angle" },
   { id: "audience", label: "Audience Finder", color: "var(--orange)", desc: "Audience + enrichment" },
-  { id: "creative", label: "Campaign Forge", color: "var(--violet)", desc: "Post + outreach drafts" },
+  { id: "creative", label: "CampaignOS Studio", color: "var(--violet)", desc: "Post + outreach drafts" },
 ] as const;
 
 // Agent ids that map to a card in the live pod (excludes the "system" channel).
@@ -176,8 +176,8 @@ function getCurrentStep(status: string, isB2B: boolean) {
     return {
       title: "Building the campaign asset",
       focus: isB2B ? "Drafting post and outreach" : "Generating caption and visual",
-      detail: "Campaign Forge is packaging the signal and angle into something ready for review.",
-      outcome: "Approval required: Forge stages assets; you choose what ships.",
+      detail: "CampaignOS Studio is packaging the signal and angle into something ready for review.",
+      outcome: "Approval required: CampaignOS stages assets; you choose what ships.",
       progress: "4 / 4",
     };
   }
@@ -191,7 +191,7 @@ function getCurrentStep(status: string, isB2B: boolean) {
     };
   }
   return {
-    title: "Forging campaign from live signals",
+    title: "Building campaign from live signals",
     focus: "Coordinating the workflow",
     detail: "The state machine is handing work between agents.",
     outcome: "Live updates will appear as each agent writes to Convex.",

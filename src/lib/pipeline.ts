@@ -287,7 +287,7 @@ async function runCreativeAndDistribution(
   await convex.mutation(api.campaigns.appendLog, {
     campaignId,
     agent: "creative",
-    message: "Campaign Forge — brand kit + Orange Slice copy + gpt-image-1 ad + QC gate...",
+    message: "CampaignOS Studio — brand kit + Orange Slice copy + gpt-image-1 ad + QC gate...",
     level: "info",
   });
 

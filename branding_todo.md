@@ -1,4 +1,4 @@
-# Branding & UX Todo — Forge Demo
+# Branding & UX Todo — CampaignOS Demo
 
 > Synthesized from: David Placek / Lexicon Branding (Vercel, Azure, Sonos), Marty Neumeier (The Brand Gap),
 > David Aaker (Building Strong Brands), and 2026 SaaS naming research.
@@ -20,7 +20,7 @@
 
 | Rank | Name | Letters | Guru Rationale | Trademark Strength | Domain | Story |
 |------|------|---------|---------------|-------------------|--------|-------|
-| **#1** | **Forge** | 5 | High-imagery (Neumeier), plosive F+G (Lexicon: energetic sound), strongest brandplay potential | ⚠️ Common word (suggestive/arbitrary) | forge.ai ✓ | "Forge a campaign from live market signals" |
+| **#1** | **CampaignOS** | 5 | Clear category signal, strong operating-system metaphor, and high B2B memorability | Check domain availability | campaignos.ai | "Build a campaign from live market signals" |
 | **#2** | **Velt** | 4 | Invented = strongest trademark (Placek), "V" most alive/vibrant sound per Lexicon, from "velocity" → speed = core value prop | ✅ Fanciful (strongest class) | velt.ai ✓ | "Velt signals into campaigns" |
 | **#3** | **Smelt** | 5 | Anglo-Saxon = high imagery (Neumeier), plosive S-M-L-T, utterly distinctive in GTM | ✅ Suggestive → Fanciful | smelt.ai ✓ | "Smelt market noise into campaign gold" |
 | **#4** | **Anvil** | 5 | Highest visual imagery (Neumeier), extends naturally: "On the anvil", "Anvil strike", premium feel | ⚠️ Common word (arbitrary) | anvil.so ✓ | "Campaigns shaped on the anvil of market reality" |
@@ -28,17 +28,17 @@
 
 ### Recommendation
 
-**Go with Forge** (domain: forge.ai) for the demo. It has the strongest emotional resonance,
+**Go with CampaignOS** (domain: campaignos.ai) for the demo. It has the strongest emotional resonance,
 clearest connection to the product (transformation + craft), and the best brandplay for a
-3-minute demo pitch. "Forge a campaign" is a sentence judges can remember and repeat.
+3-minute demo pitch. "Build a campaign from live market signals" is a sentence judges can remember and repeat.
 
 **Backup: Velt** — stronger trademark protection, shorter, directly communicates speed.
-Use this if Forge faces legal/domain issues.
+Use this if CampaignOS faces legal/domain issues.
 
 ### Names to Avoid
 
 - SignalForge (compound, 11 chars — too long per 2026 naming consensus)
-- AutoGTM (current — generic, sounds like an internal tool)
+- CampaignOS (current — generic, sounds like an internal tool)
 - Anything with "AI", "GTM", "Agent", "Pilot" in the name (saturated space)
 
 ---
@@ -47,27 +47,27 @@ Use this if Forge faces legal/domain issues.
 
 ### Global
 
-| Current | New (with Forge) |
+| Current | New (with CampaignOS) |
 |---------|------------------|
-| AutoGTM / LexAI | **Forge** |
+| CampaignOS / LexAI | **CampaignOS** |
 | "Signal to post in under two minutes" | **"Launch while the market is still talking"** |
-| "Launch agent pod" | **"Forge campaign"** |
-| "Agent pod executing" | **"Forging campaign from live signals"** |
+| "Launch agent pod" | **"Build campaign"** |
+| "Agent pod executing" | **"Building campaign from live signals"** |
 | Market Pulse | **Signal Scan** |
 | Demand Gap | **Demand Angle** |
-| Creative Studio | **Campaign Forge** |
+| Creative Studio | **CampaignOS Studio** |
 | Distribution / Approval Desk | **Approval Desk** |
-| "Nothing publishes automatically" | **"Approval required: Forge stages assets; you choose what ships"** |
+| "Nothing publishes automatically" | **"Approval required: CampaignOS stages assets; you choose what ships"** |
 
 ### Intake View
 
 | Element | Current | New |
 |---------|---------|-----|
 | Headline | "Launch a sourced GTM campaign while the trend is still alive" | "**Launch while the market is still talking**" |
-| Subhead | "Agents turn live market signals into..." | "**Forge finds live buyer pain, locks the angle, and stages campaign assets for your approval.**" |
+| Subhead | "Agents turn live market signals into..." | "**CampaignOS finds live buyer pain, locks the angle, and stages campaign assets for your approval.**" |
 | Mode toggle | "Buyer outreach" / "Social campaign" | Keep — these are outcome-based ✓ |
 | Demo button | "Use judge demo: Cruitical" | Keep ✓ |
-| Primary CTA | "Build buyer campaign →" / "Create social campaign →" | "**Forge campaign →**" |
+| Primary CTA | "Build buyer campaign →" / "Create social campaign →" | "**Build campaign →**" |
 
 ### Live Run View
 
@@ -76,7 +76,7 @@ Use this if Forge faces legal/domain issues.
 | Header | "LIVE RUN — {product}" | "**FORGING — {product}**" |
 | Step title | status-based (e.g. "Reading live market signals") | Keep `getCurrentStep()` logic from `main` branch |
 | "Now working" panel | Removed in `demo-hardening` | **Restore** — this is the hero element for Technical Complexity judging |
-| Agent labels | Market Pulse, Demand Gap, Audience Finder, Creative Studio | **Signal Scan**, **Demand Angle**, **Audience Finder**, **Campaign Forge** |
+| Agent labels | Market Pulse, Demand Gap, Audience Finder, Creative Studio | **Signal Scan**, **Demand Angle**, **Audience Finder**, **CampaignOS Studio** |
 | Backend panel | `convex.state` raw table | "**Backend proof**" — friendly labels with table names as secondary |
 
 ### Result View
@@ -86,7 +86,7 @@ Use this if Forge faces legal/domain issues.
 | Header | "RESULT · B2B/B2C" | "**CAMPAIGN READY**" |
 | CampaignTransformation | Removed in `demo-hardening` | **Restore** — "From → Signal → Angle → To" (judges see transformation in 2s) |
 | Layout | Post + insights side-by-side | **Post first** (left/hero), **rationale as evidence** (right/supporting) |
-| Compliance | "Human-in-the-loop: nothing publishes automatically" | "**Approval required: Forge stages assets; you choose what ships.**" |
+| Compliance | "Human-in-the-loop: nothing publishes automatically" | "**Approval required: CampaignOS stages assets; you choose what ships.**" |
 | QC block | Creative QC status | Keep — proves engineering rigor |
 
 ---
@@ -97,7 +97,7 @@ Use this if Forge faces legal/domain issues.
 
 | Token | Hex | Usage |
 |-------|-----|-------|
-| Orange (accent) | `#c0e05b` | Primary actions, active state, Forge brand color |
+| Orange (accent) | `#c0e05b` | Primary actions, active state, CampaignOS brand color |
 | Background | `#0a0a0b` | Main background (near-black) |
 | Panel | `#141416` | Card/panel surfaces |
 | Field | `#1a1a1e` | Input fields |
@@ -106,7 +106,7 @@ Use this if Forge faces legal/domain issues.
 | Muted | `#888890` | Secondary text |
 | Green | `#4ade80` | Approved/ready states |
 | Amber | `#fbbf24` | Warnings, sample mode |
-| Violet | `#a78bfa` | Creative/Campaign Forge accent |
+| Violet | `#a78bfa` | Creative/CampaignOS Studio accent |
 
 ### Rules
 
@@ -122,7 +122,7 @@ Use this if Forge faces legal/domain issues.
 
 ### P0 — Must do before demo (2–3 hrs)
 
-- [ ] Pick final name (Forge or Velt) and update everywhere:
+- [ ] Use CampaignOS as the final name and update everywhere:
   - `src/app/layout.tsx` — metadata title & description
   - `src/app/page.tsx` — welcome text
   - `src/components/IntakeView.tsx` — headlines, CTAs
@@ -132,9 +132,9 @@ Use this if Forge faces legal/domain issues.
 - [x] Intake: split layout (left input + right pipeline preview) — already in `main`✓
 - [x] Intake: "Use judge demo: Cruitical" button — already in `main`✓
 - [ ] Intake: update headline + subhead to new copy
-- [ ] Intake: update CTA to "Forge campaign"
+- [ ] Intake: update CTA to "Build campaign"
 - [x] LiveRun: dominant current-step panel (`getCurrentStep()`) — already in `main`✓
-- [ ] LiveRun: rename agents (Signal Scan, Demand Angle, Campaign Forge)
+- [ ] LiveRun: rename agents (Signal Scan, Demand Angle, CampaignOS Studio)
 - [ ] LiveRun: update Backend proof panel with friendly labels
 - [x] Result: CampaignTransformation strip — already in `main`✓
 - [ ] Result: reorder layout (campaign hero first, rationale second)
@@ -165,7 +165,7 @@ Use this if Forge faces legal/domain issues.
 
 ### 0:00–0:30 — Hook
 
-> "Most GTM tools start with a blank prompt. Forge starts with live market evidence. It finds what buyers are already complaining about, turns that into a campaign angle, creates the asset, and stages the post or outreach for human approval. The wedge is compressing GTM latency from weeks to minutes."
+> "Most GTM tools start with a blank prompt. CampaignOS starts with live market evidence. It finds what buyers are already complaining about, turns that into a campaign angle, creates the asset, and stages the post or outreach for human approval. The wedge is compressing GTM latency from weeks to minutes."
 
 ### 0:30–1:00 — Input
 
@@ -177,7 +177,7 @@ Use this if Forge faces legal/domain issues.
 >
 > "This is not one prompt generating a post. Each step in that pipeline is an independent agent writing structured state into Convex. The database is the handoff layer."
 >
-> (Click "Forge campaign")
+> (Click "Build campaign")
 
 ### 1:00–2:00 — Live Run
 
@@ -187,7 +187,7 @@ Use this if Forge faces legal/domain issues.
 >
 > (Steps advance: "Angle locked" → "Audience estimated" → "Campaign ready")
 >
-> "Demand Angle chooses the sharpest narrative wedge. Audience Finder builds the buyer list. Campaign Forge produces the asset with byte-level QC before human approval."
+> "Demand Angle chooses the sharpest narrative wedge. Audience Finder builds the buyer list. CampaignOS Studio produces the asset with byte-level QC before human approval."
 >
 > (Point to Backend proof panel)
 >

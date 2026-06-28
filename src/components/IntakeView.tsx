@@ -157,13 +157,13 @@ export function IntakeView({ data, onChange, onNext }: Props) {
       <section className="space-y-7">
         <header className="space-y-4">
           <div className="h-20 w-20 rounded-full dot-sun agent-pulse" />
-          <p className="mono text-xs uppercase tracking-[0.3em] text-[var(--accent-text)]">Forge</p>
+          <p className="mono text-xs uppercase tracking-[0.3em] text-[var(--accent-text)]">CampaignOS</p>
           <div className="space-y-3">
             <h1 className="max-w-xl text-4xl font-semibold tracking-tight sm:text-5xl">
               Launch while the market is still talking.
             </h1>
             <p className="max-w-lg text-base text-[var(--muted)]">
-              Forge finds live buyer pain, locks the angle, and stages campaign assets for your approval.
+              CampaignOS finds live buyer pain, locks the angle, and stages campaign assets for your approval.
             </p>
           </div>
         </header>
@@ -303,7 +303,7 @@ export function IntakeView({ data, onChange, onNext }: Props) {
             onClick={onNext}
             className="w-full lex-pill px-4 py-3 text-sm font-semibold text-[var(--accent-ink)] disabled:opacity-40 hover:brightness-110 transition"
           >
-            {canContinue ? "Forge campaign →" : "Answer more details"}
+            {canContinue ? "Build campaign →" : "Answer more details"}
           </button>
         </div>
       </section>
@@ -411,8 +411,8 @@ export function FollowUpView({ data, onChange, onLaunch, loading }: FollowUpProp
       <h2 className="text-xl font-semibold">Campaign qualifiers</h2>
       <p className="text-sm text-[var(--muted)]">
         {isB2B
-          ? "Let Forge pick the buyer path from the brief, or take manual control."
-          : "Let Forge pick the channel and buying context from the brief, or take manual control."}
+          ? "Let CampaignOS pick the buyer path from the brief, or take manual control."
+          : "Let CampaignOS pick the channel and buying context from the brief, or take manual control."}
       </p>
 
       <section className="rounded-2xl border border-[var(--border)] bg-[var(--panel)] shadow-[var(--shadow-sm)] p-4 space-y-4">
@@ -549,7 +549,7 @@ export function FollowUpView({ data, onChange, onLaunch, loading }: FollowUpProp
         onClick={() => onLaunch(visibleData)}
         className="w-full lex-pill px-4 py-3 text-sm font-semibold text-[var(--accent-ink)] disabled:opacity-40 hover:brightness-110 transition"
       >
-        {loading ? "Forging…" : canLaunch ? "Forge campaign →" : "Complete the campaign brief"}
+        {loading ? "Building…" : canLaunch ? "Build campaign →" : "Complete the campaign brief"}
       </button>
     </div>
   );

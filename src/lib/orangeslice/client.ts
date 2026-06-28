@@ -1,6 +1,6 @@
 /**
  * OrangeSliceClient — adapter over the `orangeslice` package (the hackathon host).
- * Orange Slice is the spine of Forge:
+ * Orange Slice is the spine of CampaignOS:
  *   - AI reasoning  → generateObject (structured output)
  *   - B2B audience  → oceanSearchPeople over a 1.15B-profile LinkedIn DB
  *   - contacts      → personContactGet (best-effort; needs enrichment credits)

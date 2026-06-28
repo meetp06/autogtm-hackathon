@@ -284,7 +284,7 @@ export class FiberClient {
       const created = await this.call(createAudience as SdkFunction, {
         body: {
           apiKey: this.apiKey,
-          name: `Forge - ${input.product} - ${Date.now()}`,
+          name: `CampaignOS - ${input.product} - ${Date.now()}`,
           creationMethod: "NORMAL",
         },
       });

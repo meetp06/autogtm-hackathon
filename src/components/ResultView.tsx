@@ -276,8 +276,8 @@ export function ResultView({ campaignId, onReset }: Props) {
 
           <div className="rounded-xl border border-[var(--amber)]/35 bg-[var(--amber)]/10 p-4 text-xs text-[var(--ink)]">
             {isB2B
-              ? "Approval required: Forge stages outreach drafts for you to copy & send from your own LinkedIn. Never auto-DM strangers."
-              : "Approval required: Forge stages the post for you to review and publish from your own account. Nothing publishes automatically."}
+              ? "Approval required: CampaignOS stages outreach drafts for you to copy & send from your own LinkedIn. Never auto-DM strangers."
+              : "Approval required: CampaignOS stages the post for you to review and publish from your own account. Nothing publishes automatically."}
           </div>
 
           <div className="space-y-2">

@@ -4,9 +4,9 @@ Perspective: experienced product marketing and product leadership lens, optimize
 
 ## Executive Recommendation
 
-Rename **Forge** (was AutoGTM).
+Use **CampaignOS** as the final product and project name.
 
-The old name (AutoGTM) was clear to builders, but it sounded generic, internal, and commodity. It told judges "this automates go-to-market," but it did not create a memorable category, emotional hook, or investor-grade point of view. The current product is stronger than the name: it is not just automating GTM tasks; it is collapsing the delay between live buyer pain and distribution.
+The name should make the product feel like the operating layer for modern GTM: not just a prompt that writes copy, but a system that collapses the delay between live buyer pain and distribution.
 
 Recommended brand:
 
@@ -23,7 +23,7 @@ One-line pitch:
 Why this is stronger:
 
 - **Signal** names the core input: real market evidence, not generic prompting.
-- **Forge** implies transformation, craft, and production quality.
+- **CampaignOS** implies transformation, craft, and production quality.
 - It sounds like a product/company, not a workflow script.
 - It gives the judges a phrase they can repeat: "signal to campaign."
 - It avoids the overused "Auto", "AI", "GTM", and "Agent" naming cluster.
@@ -32,7 +32,7 @@ Why this is stronger:
 
 ### Replace
 
-- Product name: `Forge`
+- Product name: `CampaignOS`
 - UI headline: `Signal to post in under two minutes`
 - Button: `Launch agent pod`
 - Concept: `Autonomous Multi-Agent Growth Pod`
@@ -41,7 +41,7 @@ Why this is stronger:
 
 - Product name: `SignalForge`
 - UI headline: `Launch while the market is still talking`
-- Button: `Forge campaign`
+- Button: `Build campaign`
 - Concept: `Signal-to-campaign growth desk`
 
 ### Backup Names
@@ -58,7 +58,7 @@ If the team dislikes SignalForge, use one of these:
 
 Avoid:
 
-- Forge (was AutoGTM)
+- CampaignOS
 - GrowthPod
 - AgentGTM
 - GTM AI
@@ -176,7 +176,7 @@ Avoid:
 
 Simple mark:
 
-- A waveform or signal line entering a forge/anvil-style angular mark.
+- A waveform or signal line entering a campaign-system angular mark.
 - Or a spark inside a bracketed command glyph.
 
 Do not spend hackathon time over-designing the logo. A clean wordmark plus consistent copy will matter more.
@@ -187,13 +187,13 @@ Do not spend hackathon time over-designing the logo. A clean wordmark plus consi
 
 | Current | Recommended |
 | --- | --- |
-| AutoGTM (old) | Forge (final) |
+| CampaignOS (old) | CampaignOS (final) |
 | Signal to post in under two minutes | Launch while the market is still talking |
-| Launch agent pod | Forge campaign |
-| Agent pod executing | Campaign forge running |
+| Launch agent pod | Build campaign |
+| Agent pod executing | CampaignOS run active |
 | Market Pulse | Signal Scan |
 | Demand Gap | Demand Angle |
-| Creative Studio | Campaign Forge |
+| Creative Studio | CampaignOS Studio |
 | Distribution | Approval Desk |
 | Campaign Ready | Ready to Launch |
 
@@ -209,7 +209,7 @@ Supporting copy:
 
 Primary CTA:
 
-> Forge campaign
+> Build campaign
 
 ### Live Run Screen
 
@@ -222,7 +222,7 @@ Replace agent descriptions:
 - Signal Scan: `Finds sourced buyer pain`
 - Demand Angle: `Chooses the sharpest wedge`
 - Audience Finder: `Builds the buyer list`
-- Campaign Forge: `Creates assets and outreach`
+- CampaignOS Studio: `Creates assets and outreach`
 
 ### Result Screen
 
@@ -322,12 +322,12 @@ The wedge is:
 
 High-impact changes before demo:
 
-- Rename visible product text to Forge.
-- Change primary CTA to `Forge campaign`.
-- Replace "agent pod" language with "campaign forge" or "growth desk".
+- Rename visible product text to CampaignOS.
+- Change primary CTA to `Build campaign`.
+- Replace "agent pod" language with "CampaignOS run" or "growth desk".
 - Rename Market Pulse to Signal Scan in the UI.
 - Rename Demand Gap to Demand Angle in the UI.
-- Rename Creative Studio to Campaign Forge in the UI.
+- Rename Creative Studio to CampaignOS Studio in the UI.
 - Rename Distribution to Approval Desk in logs and docs.
 - Update README first paragraph and metadata title.
 - Update `src/app/layout.tsx` metadata title and description.
@@ -369,7 +369,7 @@ Opening:
 
 During live run:
 
-> This is not one prompt generating a post. Each agent writes structured state into Convex. Signal Scan saves sourced buyer pain, Demand Angle chooses the wedge, Audience Finder builds the buyer list, and Campaign Forge produces the asset with QC before approval.
+> This is not one prompt generating a post. Each agent writes structured state into Convex. Signal Scan saves sourced buyer pain, Demand Angle chooses the wedge, Audience Finder builds the buyer list, and CampaignOS Studio produces the asset with QC before approval.
 
 At result:
 
@@ -389,4 +389,4 @@ Keep the technical architecture. The product is already more interesting than th
 2. It turns those signals into a campaign system, not just copy.
 3. It keeps humans in control of publishing.
 
-That is a stronger company story than the old AutoGTM name.
+That is the stronger company story for CampaignOS.
