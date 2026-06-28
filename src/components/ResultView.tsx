@@ -25,6 +25,28 @@ export function ResultView({ campaignId, onReset }: Props) {
   const overrideQc = useMutation(api.campaigns.overrideQc);
   const [approvingPlatform, setApprovingPlatform] = useState<"instagram" | "linkedin" | null>(null);
   const [overriding, setOverriding] = useState(false);
+  const [sendingId, setSendingId] = useState<string | null>(null);
+  const [sendError, setSendError] = useState<string | null>(null);
+
+  async function handleSendGmail(outreachId: Id<"outreach">) {
+    setSendingId(outreachId);
+    setSendError(null);
+    try {
+      const res = await fetch("/api/outreach", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ campaignId, outreachId }),
+      });
+      if (!res.ok) {
+        const b = (await res.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(b?.error ?? "Gmail send failed");
+      }
+    } catch (e) {
+      setSendError(e instanceof Error ? e.message : "Gmail send failed");
+    } finally {
+      setSendingId(null);
+    }
+  }
 
   const isB2B = (campaign?.mode ?? "b2c") === "b2b";
   const platform = creative?.platform ?? (isB2B ? "linkedin" : "instagram");
@@ -32,6 +54,7 @@ export function ResultView({ campaignId, onReset }: Props) {
   const creativeSource = creative?.source ?? "fallback";
   const qcBlocked = qcStatus !== "pass" && !campaign?.qcHumanOverride;
   const canApprove = campaign?.status === "ready_to_post" && !qcBlocked;
+  const emailSubject = demand?.angleHeadline ?? campaign?.product ?? "Quick intro";
   const postPlatforms =
     posts && posts.length > 0
       ? posts.map((post) => post.platform)
@@ -290,9 +313,18 @@ export function ResultView({ campaignId, onReset }: Props) {
               onClick={handleApproveAllOutreach}
               className="text-xs text-[var(--accent-text)] hover:underline"
             >
-              Approve all drafts
+              Mark all done
             </button>
           </div>
+          <p className="text-xs text-[var(--faint)]">
+            <strong className="text-[var(--ink)]">Send via Gmail</strong> = one-click auto-send (Orange
+            Slice). LinkedIn / Email ✉ / Copy = free assisted fallbacks (open + paste).
+          </p>
+          {sendError && (
+            <p className="rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-xs text-red-700">
+              Gmail send failed: {sendError}
+            </p>
+          )}
           <div className="grid gap-4 md:grid-cols-2">
             {outreach.map((row) => (
               <div
@@ -314,21 +346,58 @@ export function ResultView({ campaignId, onReset }: Props) {
                   </a>
                 </div>
                 <p className="text-sm whitespace-pre-wrap text-[var(--ink)]">{row.draftMessage}</p>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => navigator.clipboard.writeText(row.draftMessage ?? "")}
-                    disabled={row.state !== "draft"}
-                    className="flex-1 rounded-lg border border-[var(--border)] text-[var(--muted)] py-2 text-xs hover:text-[var(--ink)] disabled:opacity-40"
-                  >
-                    Copy draft
-                  </button>
-                  <button
-                    onClick={() => handleApproveOutreach(row._id)}
-                    disabled={row.state !== "draft"}
-                    className="flex-1 rounded-lg border border-[var(--green)] text-[var(--green)] py-2 text-xs disabled:opacity-40"
-                  >
-                    {row.state === "draft" ? "Approve" : `${row.state} ✓`}
-                  </button>
+                <div className="space-y-2">
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={async () => {
+                        try {
+                          await navigator.clipboard.writeText(row.draftMessage);
+                        } catch {
+                          /* clipboard may be blocked; profile still opens */
+                        }
+                        if (row.prospect?.linkedinUrl) {
+                          window.open(row.prospect.linkedinUrl, "_blank", "noopener,noreferrer");
+                        }
+                        if (row.state === "draft") await handleApproveOutreach(row._id);
+                      }}
+                      className="lex-pill py-2 text-xs"
+                    >
+                      Connect on LinkedIn ↗
+                    </button>
+                    {row.prospect?.workEmail && (
+                      <button
+                        onClick={() => handleSendGmail(row._id)}
+                        disabled={sendingId === row._id || row.state === "sent"}
+                        className="lex-pill py-2 text-xs disabled:opacity-50"
+                      >
+                        {row.state === "sent"
+                          ? "Sent via Gmail ✓"
+                          : sendingId === row._id
+                            ? "Sending…"
+                            : "Send via Gmail"}
+                      </button>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    {row.prospect?.workEmail && (
+                      <a
+                        href={`mailto:${row.prospect.workEmail}?subject=${encodeURIComponent(
+                          emailSubject
+                        )}&body=${encodeURIComponent(row.draftMessage)}`}
+                        className="flex-1 rounded-full border border-[var(--border)] px-3 py-2 text-center text-xs text-[var(--muted)] hover:text-[var(--ink)]"
+                        title={`Open mail app for ${row.prospect.workEmail}`}
+                      >
+                        Email ✉ (manual)
+                      </a>
+                    )}
+                    <button
+                      onClick={() => navigator.clipboard.writeText(row.draftMessage).catch(() => {})}
+                      className="rounded-full border border-[var(--border)] px-3 py-2 text-xs text-[var(--muted)] hover:text-[var(--ink)]"
+                      title="Copy note only"
+                    >
+                      Copy
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
