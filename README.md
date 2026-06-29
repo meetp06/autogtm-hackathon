@@ -1,4 +1,5 @@
-# CampaignOS
+# Write your product before you sleep, and CampaignOS wakes you up with qualified leads, buyer-aligned messaging, and
+  campaigns ready to send.
 
 CampaignOS turns a product description into a sourced GTM campaign. It runs a small agent pipeline over live market signals, locks one demand angle, generates a branded social creative, and stages the resulting post for human approval. In B2B mode it also builds a prospect audience and drafts personalized LinkedIn outreach.
 
